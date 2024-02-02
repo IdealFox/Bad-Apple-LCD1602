@@ -1,0 +1,40 @@
+C51 COMPILER V9.54   TIME                                                                  01/31/2024 16:23:04 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE TIME
+OBJECT MODULE PLACED IN .\Objects\Time.obj
+COMPILER INVOKED BY: D:\app\keil uVision 5\C51\BIN\C51.EXE Library\Time\Time.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Library
+                    -\Time;.\Library\Delay;.\Library\LCD1602;.\Library\UART) DEBUG OBJECTEXTEND PRINT(.\Listings\Time.lst) TABS(2) OBJECT(.\O
+                    -bjects\Time.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include <Time.H>
+   3          
+   4          void Time0_Init(void)   //1毫秒@12.000MHz
+   5          {
+   6   1        TMOD &= 0xF0;   //设置定时器模式
+   7   1        TMOD |= 0x01;   //设置定时器模式
+   8   1        TL0 = 0x18;   //设置定时初值
+   9   1        TH0 = 0xFC;   //设置定时初值
+  10   1        TF0 = 0;    //清除TF0标志
+  11   1        TR0 = 1;    //定时器0开始计时
+  12   1        ET0=1;
+  13   1        EA=1;
+  14   1        PT0=0;      //中断优先级，低
+  15   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     23    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

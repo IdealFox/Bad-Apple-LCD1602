@@ -1,0 +1,1 @@
+"Library\Delay\Delay.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(.\Library\Time;.\Library\Delay;.\Library\LCD1602;.\Library\UART) DEBUG OBJECTEXTEND PRINT(.\Listings\Delay.lst) TABS (2) OBJECT(.\Objects\Delay.obj)

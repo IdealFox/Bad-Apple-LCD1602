@@ -1,0 +1,1 @@
+"Library\UART\UART.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(.\Library\Time;.\Library\Delay;.\Library\LCD1602;.\Library\UART) DEBUG OBJECTEXTEND PRINT(.\Listings\UART.lst) TABS (2) OBJECT(.\Objects\UART.obj)

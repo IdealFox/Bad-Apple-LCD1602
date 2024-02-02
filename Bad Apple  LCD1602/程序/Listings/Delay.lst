@@ -1,0 +1,81 @@
+C51 COMPILER V9.54   DELAY                                                                 01/31/2024 21:12:59 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE DELAY
+OBJECT MODULE PLACED IN .\Objects\Delay.obj
+COMPILER INVOKED BY: D:\app\keil uVision 5\C51\BIN\C51.EXE Library\Delay\Delay.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Libra
+                    -ry\Time;.\Library\Delay;.\Library\LCD1602;.\Library\UART) DEBUG OBJECTEXTEND PRINT(.\Listings\Delay.lst) TABS(2) OBJECT(
+                    -.\Objects\Delay.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include <INTRINS.H>
+   3          #include <Delay.h>
+   4          
+   5          void Delay_us(unsigned int us)    //@12.000MHz
+   6          {
+   7   1        while(us)
+   8   1        {
+   9   2          _nop_();
+  10   2          us--;
+  11   2        }
+  12   1      }
+  13          
+  14          void Delay_ms(unsigned int ms)    //@12.000MHz
+  15          {
+  16   1        while(ms)
+  17   1        {
+  18   2          unsigned char i, j;
+  19   2      
+  20   2          i = 2;
+  21   2          j = 239;
+  22   2          do
+  23   2          {
+  24   3            while (--j);
+  25   3          }
+  26   2          while (--i);
+  27   2          ms--;
+  28   2        }
+  29   1      }
+  30          void Delay_s(unsigned int s)    //@12.000MHz
+  31          {
+  32   1        while(s)
+  33   1        {
+  34   2          unsigned char i, j, k;
+  35   2      
+  36   2          _nop_();
+  37   2          i = 8;
+  38   2          j = 154;
+  39   2          k = 122;
+  40   2          do
+  41   2          {
+  42   3            do
+  43   3            {
+  44   4              while (--k);
+  45   4            } 
+  46   3            while (--j);
+  47   3          }
+  48   2          while (--i);
+  49   2          s--;
+  50   2        }
+  51   1      }
+  52          
+  53          
+C51 COMPILER V9.54   DELAY                                                                 01/31/2024 21:12:59 PAGE 2   
+
+  54          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     68    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       5
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

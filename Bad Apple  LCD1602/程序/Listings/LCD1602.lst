@@ -1,0 +1,219 @@
+C51 COMPILER V9.54   LCD1602                                                               02/01/2024 18:55:35 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE LCD1602
+OBJECT MODULE PLACED IN .\Objects\LCD1602.obj
+COMPILER INVOKED BY: D:\app\keil uVision 5\C51\BIN\C51.EXE Library\LCD1602\LCD1602.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\L
+                    -ibrary\Time;.\Library\Delay;.\Library\LCD1602;.\Library\UART) DEBUG OBJECTEXTEND PRINT(.\Listings\LCD1602.lst) TABS(2) O
+                    -BJECT(.\Objects\LCD1602.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include <LCD1602.h>
+   3          #include <Delay.h>
+   4            
+   5            
+   6          //void LCDReadBF()                      //检测LCD1602是否空闲   //空闲检测
+   7          //{
+   8          //  unsigned char state;
+   9          //  unsigned char i;
+  10          //  LCD1602_DB = 0XFF;                  //IO口置1
+  11          //  LCD1602_RS = 0;                     //指令模式
+  12          //  LCD1602_RW = 1;                     //读
+  13          //  do{
+  14          //  LCD1602_EN = 1;                     //EN口置1，读取指令 
+  15          //  state = LCD1602_DB;                 //读取IO口数据
+  16          //  LCD1602_EN = 0;                     //EN口置0，退出
+  17          //  i++;
+  18          //  if(i>50)
+  19          //  {break;}} 
+  20          //  while(state & 0x80);                //判断state是否为80，若是表示LCD1602空闲，退出循环
+  21          //}
+  22          
+  23          void LCDWriteCmd(unsigned char cmd)   //写命令
+  24          {
+  25   1      //  LCDReadBF();                        //空闲检测
+  26   1        Delay_us(3);
+  27   1        LCD1602_RS = 0;                     //指令模式
+  28   1        LCD1602_RW = 0;                     //写
+  29   1        LCD1602_DB = cmd;                   //写指令
+  30   1        LCD1602_EN = 1;                     //EN口置1，写入指令
+  31   1        LCD1602_EN = 0;                     //EN口置0，退出
+  32   1      }
+  33          
+  34          void LCDWriteData(unsigned char dat)    //写数据
+  35          {
+  36   1      //  LCDReadBF();                        //空闲检测
+  37   1        Delay_us(3);
+  38   1        LCD1602_RS = 1;                     //数据模式
+  39   1        LCD1602_RW = 0;                     //写
+  40   1        LCD1602_DB = dat;                   //写数据
+  41   1        LCD1602_EN = 1;                     //EN口置1，写入指令
+  42   1        LCD1602_EN = 0;                     //EN口置0，退出
+  43   1      }
+  44          
+  45          ///**
+  46          //  * @brief  返回值=X的Y次方
+  47          //  */
+  48          int LCD_Pow(int X,int Y)
+  49          {
+  50   1        unsigned char i;
+  51   1        int Result=1;
+  52   1        for(i=0;i<Y;i++)
+  53   1        {
+C51 COMPILER V9.54   LCD1602                                                               02/01/2024 18:55:35 PAGE 2   
+
+  54   2          Result*=X;
+  55   2        }
+  56   1        return Result;
+  57   1      }
+  58          
+  59          /**
+  60            * @brief  LCD1602设置光标位置
+  61            * @param  Line 行位置，范围：1~2
+  62            * @param  Column 列位置，范围：1~16
+  63            * @retval 无
+  64            */
+  65          void LCD_SetCursor(unsigned char Line,unsigned char Column)
+  66          {
+  67   1        if(Line==1)
+  68   1        {
+  69   2          LCDWriteCmd(0x80|(Column-1));
+  70   2        }
+  71   1        if(Line==2)
+  72   1        {
+  73   2          LCDWriteCmd(0x80|(Column-1+0x40));
+  74   2        }
+  75   1      }
+  76          
+  77          /** @brief  LCD1602初始化
+  78            * @param  无
+  79            * @retval 无
+  80            **/
+  81          void LCD_Init()                   //LCD1602初始化函数
+  82          {
+  83   1        LCDWriteCmd(LCD_MODE_PIN8);         //显示模式设置，8位数据口，两行，5*8点阵
+  84   1        LCDWriteCmd(LCD_DIS_ON);            //显示开，光标关，光标不闪烁
+  85   1        LCDWriteCmd(LCD_CURSOR_RIGHT);      //光标右移，显示不移动
+  86   1        LCDWriteCmd(LCD_SCREEN_CLR);        //清屏
+  87   1      }
+  88          
+  89          /** @brief  清屏
+  90            * @param  无
+  91            * @retval 无
+  92            **/
+  93          void LCD_Clear()
+  94          {
+  95   1        LCDWriteCmd(LCD_SCREEN_CLR);
+  96   1      }
+  97          /**
+  98            * @brief  在LCD1602指定位置上显示一个字符
+  99            * @param  Line 行位置，范围：1~2
+ 100            * @param  Column 列位置，范围：1~16
+ 101            * @param  Char 要显示的字符
+ 102            * @retval 无
+ 103            */
+ 104          void LCD_ShowChar(unsigned char Line,unsigned char Column,char Char)
+ 105          {
+ 106   1        LCD_SetCursor(Line,Column);
+ 107   1        LCDWriteData(Char);
+ 108   1      }
+ 109          
+ 110          /** @brief  LCD1602显示字符串
+ 111            * @param  Line 行位置，范围：1~2
+ 112            * @param  Column 列位置，范围：1~16
+ 113            * @param  Str     
+ 114            * @retval 无
+ 115            **/
+C51 COMPILER V9.54   LCD1602                                                               02/01/2024 18:55:35 PAGE 3   
+
+ 116          void LCD_ShowStr(unsigned char Line,unsigned char Column,unsigned char *Str)
+ 117          {
+ 118   1        LCD_SetCursor(Line,Column);
+ 119   1        while(*Str !='\0'){
+ 120   2        LCDWriteData(*Str++);
+ 121   2        }
+ 122   1      }
+ 123          
+ 124          /**
+ 125            * @brief  在LCD1602指定位置开始显示所给数字
+ 126            * @param  Line 起始行位置，范围：1~2
+ 127            * @param  Column 起始列位置，范围：1~16
+ 128            * @param  Number 要显示的数字，范围：0~65535
+ 129            * @param  Length 要显示数字的长度，范围：1~5
+ 130            * @retval 无
+ 131            */
+ 132          void LCD_ShowNum(unsigned char Line,unsigned char Column,unsigned int Number,unsigned char Length)
+ 133          {
+ 134   1        unsigned char i;
+ 135   1        LCD_SetCursor(Line,Column);
+ 136   1        for(i=Length;i>0;i--)
+ 137   1        {
+ 138   2          LCDWriteData(Number/LCD_Pow(10,i-1)%10+'0');
+ 139   2        }
+ 140   1      }
+ 141          
+ 142          /** @brief  写入数据至CGRAM
+ 143            * @param  sec 写入的数据 time  写入的次数
+ 144            * @retval 无
+ 145            **/
+ 146          void LCDWriteCGRAM(unsigned char sec,unsigned char time)
+ 147          {
+ 148   1        switch(time)
+ 149   1        { case 0:LCDWriteCmd(0x40);break;
+ 150   2          case 8:LCDWriteCmd(0x48);break;
+ 151   2          case 16:LCDWriteCmd(0x50);break;
+ 152   2          case 24:LCDWriteCmd(0x58);break;
+ 153   2          case 32:LCDWriteCmd(0x60);break;
+ 154   2          case 40:LCDWriteCmd(0x68);break;
+ 155   2          case 48:LCDWriteCmd(0x70);break;
+ 156   2          case 56:LCDWriteCmd(0x78);break;
+ 157   2          default :break;
+ 158   2        }
+ 159   1        LCDWriteData(sec);
+ 160   1      }
+ 161          
+ 162          
+ 163          /** @brief  LCD1602展示自定义字符
+ 164            * @param  无
+ 165            * @retval 无
+ 166            **/
+ 167          void LCD_Custom()
+ 168          {
+ 169   1        LCD_Clear();
+ 170   1        Delay_ms(5);
+ 171   1        LCDWriteCmd(0x80);
+ 172   1        LCDWriteData(0X00);
+ 173   1        LCDWriteCmd(0x81);
+ 174   1        LCDWriteData(0X01);
+ 175   1        LCDWriteCmd(0x82);
+ 176   1        LCDWriteData(0X02);
+ 177   1        LCDWriteCmd(0x83);
+C51 COMPILER V9.54   LCD1602                                                               02/01/2024 18:55:35 PAGE 4   
+
+ 178   1        LCDWriteData(0X03);
+ 179   1        LCDWriteCmd(0xC0);
+ 180   1        LCDWriteData(0X04);
+ 181   1        LCDWriteCmd(0xC1);
+ 182   1        LCDWriteData(0X05);
+ 183   1        LCDWriteCmd(0xC2);
+ 184   1        LCDWriteData(0X06);
+ 185   1        LCDWriteCmd(0xC3);
+ 186   1        LCDWriteData(0X07);
+ 187   1      }
+ 188          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    418    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      19
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
